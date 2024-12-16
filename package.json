@@ -19,9 +19,12 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sonner": "^1.7.1",
-    "tailwind-merge": "^2.5.5"
+    "tailwind-merge": "^2.5.5",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@conform-to/react": "^1.2.2",
+    "@conform-to/zod": "^1.2.2",
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",

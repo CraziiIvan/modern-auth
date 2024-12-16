@@ -1,24 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
-import {
-  RiFacebookFill,
-  RiGithubFill,
-  RiGoogleFill,
-  RiTwitterXFill,
-} from "@remixicon/react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { RiFacebookFill, RiGoogleFill } from "@remixicon/react";
+import { login } from "@/lib/actions";
+import { useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
+import { loginSchema } from "@/lib/schema";
+import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
+  const [loading, setLoading] = useState(false);
+
+  const [lastResult, action] = useActionState(login, undefined);
+
+  const [form, fields] = useForm({
+    lastResult,
+
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: loginSchema });
+    },
+
+    shouldValidate: "onBlur",
+    shouldRevalidate: "onInput",
+  });
+
   return (
-    <form className=" space-y-4 w-full">
+    <form
+      id={form.id}
+      onSubmit={form.onSubmit}
+      action={action}
+      noValidate
+      className=" space-y-4 w-full"
+    >
       <div className="flex flex-col gap-2">
         <Button variant="outline">
           <RiGoogleFill
@@ -43,13 +63,17 @@ export default function LoginForm() {
         <div className=" h-px grow bg-input" />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="input-06">Email</Label>
+        <Label htmlFor="login-email">Email</Label>
         <Input
-          id="input-06"
-          className="border-destructive/80 text-destructive focus-visible:border-destructive/80 focus-visible:ring-destructive/20"
+          id="login-email"
+          className={cn({
+            "border-destructive/80 text-destructive focus-visible:border-destructive/80 focus-visible:ring-destructive/20":
+              fields.email.errors,
+          })}
           placeholder="Email"
           type="email"
-          defaultValue="invalid@email.com"
+          key={fields.email.key}
+          name={fields.email.name}
           required
         />
         <p
@@ -57,18 +81,23 @@ export default function LoginForm() {
           role="alert"
           aria-live="polite"
         >
-          Email is invalid
+          {fields.email.errors}
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="input-23">Password</Label>
+        <Label htmlFor="login-password">Password</Label>
         <div className="relative">
           <Input
-            id="input-23"
-            className="pe-9"
+            id="login-password"
+            className={cn("pe-9", {
+              "border-destructive/80 text-destructive focus-visible:border-destructive/80 focus-visible:ring-destructive/20":
+                fields.email.errors,
+            })}
             placeholder="Password"
             type={isVisible ? "text" : "password"}
+            key={fields.password.key}
+            name={fields.password.name}
             required
           />
           <button
@@ -86,9 +115,36 @@ export default function LoginForm() {
             )}
           </button>
         </div>
+        <p
+          className="mt-2 text-xs text-destructive"
+          role="alert"
+          aria-live="polite"
+        >
+          {fields.password.errors}
+        </p>
       </div>
       <div className=" pt-4">
-        <Button className="w-full">Login Account</Button>
+        <Button className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <LoaderCircle
+                className="-ms-1 me-2 animate-spin"
+                size={16}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+              Submiting
+            </>
+          ) : (
+            "Login Account"
+          )}
+        </Button>
+      </div>
+      <div className="text-center text-sm text-muted-foreground">
+        Don&apos;t have an account?{" "}
+        <a href="/signup" className="underline underline-offset-4">
+          Sign up
+        </a>
       </div>
     </form>
   );
