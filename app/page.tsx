@@ -11,9 +11,10 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="font-[family-name:var(--font-geist-sans)]">
-
-       
-    </main>
+    <div className="flex items-center justify-center min-h-svh">
+      <main>
+        <h1 className=" font-medium text-xl">Welcome from home page</h1>
+      </main>
+    </div>
   );
 }
