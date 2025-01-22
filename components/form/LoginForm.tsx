@@ -9,7 +9,7 @@ import { RiFacebookFill, RiGoogleFill } from "@remixicon/react";
 import { login } from "@/lib/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { loginSchema } from "@/lib/schema";
+import { authSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
@@ -24,7 +24,7 @@ export default function LoginForm() {
     lastResult,
 
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: loginSchema });
+      return parseWithZod(formData, { schema: authSchema });
     },
 
     shouldValidate: "onBlur",
@@ -47,14 +47,6 @@ export default function LoginForm() {
             aria-hidden="true"
           />
           Login with Google
-        </Button>
-        <Button variant="outline">
-          <RiFacebookFill
-            className="me-3 text-[#1877f2] dark:text-white/60"
-            size={16}
-            aria-hidden="true"
-          />
-          Login with Facebook
         </Button>
       </div>
       <div className=" flex items-center gap-x-2 text-sm text-muted-foreground pt-2">
@@ -84,7 +76,6 @@ export default function LoginForm() {
           {fields.email.errors}
         </p>
       </div>
-
       <div className="space-y-2">
         <Label htmlFor="login-password">Password</Label>
         <div className="relative">
