@@ -5,26 +5,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import { RiFacebookFill, RiGoogleFill } from "@remixicon/react";
+import { RiGoogleFill } from "@remixicon/react";
 import { login } from "@/lib/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import { authSchema } from "@/lib/schema";
+import { loginSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
-  const [loading, setLoading] = useState(false);
-
-  const [lastResult, action] = useActionState(login, undefined);
+  const [lastResult, action, isPending] = useActionState(login, undefined);
 
   const [form, fields] = useForm({
     lastResult,
 
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: authSchema });
+      return parseWithZod(formData, { schema: loginSchema });
     },
 
     shouldValidate: "onBlur",
@@ -66,6 +64,7 @@ export default function LoginForm() {
           type="email"
           key={fields.email.key}
           name={fields.email.name}
+          defaultValue={fields.email.initialValue}
           required
         />
         <p
@@ -89,6 +88,7 @@ export default function LoginForm() {
             type={isVisible ? "text" : "password"}
             key={fields.password.key}
             name={fields.password.name}
+            defaultValue={fields.password.initialValue}
             required
           />
           <button
@@ -115,8 +115,8 @@ export default function LoginForm() {
         </p>
       </div>
       <div className=" pt-4">
-        <Button className="w-full" disabled={loading}>
-          {loading ? (
+        <Button className="w-full" disabled={isPending}>
+          {isPending ? (
             <>
               <LoaderCircle
                 className="-ms-1 me-2 animate-spin"
