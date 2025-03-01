@@ -4,13 +4,22 @@ import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { CircleAlert, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { RiGoogleFill } from "@remixicon/react";
 import { login } from "@/lib/actions";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { loginSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
+
+export const signInWithGoogle = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  await authClient.signIn.social({
+    provider: "google",
+  });
+};
 
 export default function LoginForm() {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -38,7 +47,7 @@ export default function LoginForm() {
       className=" space-y-4 w-full"
     >
       <div className="flex flex-col gap-2">
-        <Button variant="outline">
+        <Button variant="outline" onClick={signInWithGoogle}>
           <RiGoogleFill
             className="me-3 text-[#DB4437] dark:text-white/60"
             size={16}
@@ -52,6 +61,19 @@ export default function LoginForm() {
         Or continue with
         <div className=" h-px grow bg-input" />
       </div>
+      {form.errors && (
+        <div className="rounded-lg border border-border px-4 py-3">
+          <p className="text-sm">
+            <CircleAlert
+              className="-mt-0.5 me-3 inline-flex text-red-500"
+              size={16}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+            {form.errors}
+          </p>
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="login-email">Email</Label>
         <Input
@@ -67,13 +89,15 @@ export default function LoginForm() {
           defaultValue={fields.email.initialValue}
           required
         />
-        <p
-          className="mt-2 text-xs text-destructive"
-          role="alert"
-          aria-live="polite"
-        >
-          {fields.email.errors}
-        </p>
+        {fields.email.errors && (
+          <p
+            className="mt-2 text-xs text-destructive"
+            role="alert"
+            aria-live="polite"
+          >
+            {fields.email.errors}
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="login-password">Password</Label>
@@ -82,7 +106,7 @@ export default function LoginForm() {
             id="login-password"
             className={cn("pe-9", {
               "border-destructive/80 text-destructive focus-visible:border-destructive/80 focus-visible:ring-destructive/20":
-                fields.email.errors,
+                fields.password.errors,
             })}
             placeholder="Password"
             type={isVisible ? "text" : "password"}
@@ -106,13 +130,15 @@ export default function LoginForm() {
             )}
           </button>
         </div>
-        <p
-          className="mt-2 text-xs text-destructive"
-          role="alert"
-          aria-live="polite"
-        >
-          {fields.password.errors}
-        </p>
+        {fields.password.errors && (
+          <p
+            className="mt-2 text-xs text-destructive"
+            role="alert"
+            aria-live="polite"
+          >
+            {fields.password.errors}
+          </p>
+        )}
       </div>
       <div className=" pt-4">
         <Button className="w-full" disabled={isPending}>
@@ -132,7 +158,7 @@ export default function LoginForm() {
         </Button>
       </div>
       <div className="text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        Don't have an account?{" "}
         <a href="/signup" className="underline underline-offset-4">
           Sign up
         </a>

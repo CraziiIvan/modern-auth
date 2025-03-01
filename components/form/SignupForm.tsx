@@ -11,6 +11,7 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { signupSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
+import { signInWithGoogle } from "@/components/form/LoginForm";
 
 export default function SignupForm() {
   const [password, setPassword] = useState("");
@@ -75,7 +76,7 @@ export default function SignupForm() {
       className=" space-y-4 w-full"
     >
       <div className="flex flex-col gap-2">
-        <Button variant="outline">
+        <Button variant="outline" onClick={signInWithGoogle}>
           <RiGoogleFill
             className="me-3 text-[#DB4437] dark:text-white/60"
             size={16}
