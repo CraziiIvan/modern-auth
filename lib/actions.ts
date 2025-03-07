@@ -1,21 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { parseWithZod } from "@conform-to/zod";
-import { loginSchema, signupSchema } from "./schema";
 import { auth } from "./auth";
 import { headers } from "next/headers";
 import { APIError } from "better-auth/api";
 
 export async function signup(prevState: unknown, formData: FormData) {
-  // const submission = parseWithZod(formData, {
-  //   schema: signupSchema,
-  // });
-
-  // if (submission.status !== "success") {
-  //   return submission.reply();
-  // }
-
   try {
     await auth.api.signUpEmail({
       body: {
@@ -40,14 +30,6 @@ export async function signup(prevState: unknown, formData: FormData) {
 }
 
 export async function login(prevState: unknown, formData: FormData) {
-  // const submission = parseWithZod(formData, {
-  //   schema: loginSchema,
-  // });
-
-  // if (submission.status !== "success") {
-  //   return submission.reply();
-  // }
-
   try {
     await auth.api.signInEmail({
       body: {
