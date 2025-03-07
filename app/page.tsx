@@ -1,20 +1,27 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+import { CustomSonner } from "@/components/ui/custom-sonner";
+import { logout } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Home() {
   const router = useRouter();
 
   async function logoutHandle() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-        },
-      },
-    });
+    const result = await logout();
+
+    if (result?.success) {
+      toast.custom((t) => (
+        <CustomSonner type="success" message={result.message} t={t} />
+      ));
+      router.push("/login");
+    } else if (!result?.success) {
+      toast.custom((t) => (
+        <CustomSonner type="error" message={result.message} t={t} />
+      ));
+    }
   }
 
   return (
