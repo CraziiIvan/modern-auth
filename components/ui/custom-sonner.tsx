@@ -10,7 +10,7 @@ type TPropsCustomSonner = {
 
 export function CustomSonner({ type, message, t }: TPropsCustomSonner) {
   return (
-    <div className="bg-background z-50 max-w-[400px] rounded-md border border-border px-4 py-3 shadow-lg">
+    <div className="bg-[#0a0a0a] z-50 max-w-[400px] rounded-md border border-border px-4 py-3 shadow-lg ">
       <div className="flex gap-2">
         <p className="grow text-sm">
           {type === "success" && (

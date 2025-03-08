@@ -63,10 +63,10 @@ export default function SignupForm() {
 
   useEffect(() => {
     if (lastResult?.success) {
+      router.push("/");
       toast.custom((t) => (
         <CustomSonner type="success" message={lastResult.message} t={t} />
       ));
-      router.push("/");
     } else if (lastResult?.success === false) {
       toast.custom((t) => (
         <CustomSonner type="error" message={lastResult.message} t={t} />

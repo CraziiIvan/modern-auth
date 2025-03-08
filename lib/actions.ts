@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { auth } from "./auth";
 import { headers } from "next/headers";
 import { APIError } from "better-auth/api";
@@ -70,6 +69,4 @@ export async function logout() {
       };
     }
   }
-
-  redirect("/");
 }

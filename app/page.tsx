@@ -13,11 +13,11 @@ export default function Home() {
     const result = await logout();
 
     if (result?.success) {
+      router.push("/login");
       toast.custom((t) => (
         <CustomSonner type="success" message={result.message} t={t} />
       ));
-      router.push("/login");
-    } else if (!result?.success) {
+    } else if (result?.success === false) {
       toast.custom((t) => (
         <CustomSonner type="error" message={result.message} t={t} />
       ));

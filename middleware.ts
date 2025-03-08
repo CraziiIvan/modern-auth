@@ -1,26 +1,17 @@
-import { betterFetch } from "@better-fetch/fetch";
-import type { auth } from "@/lib/auth";
-import { NextResponse, type NextRequest } from "next/server";
- 
-type Session = typeof auth.$Infer.Session;
- 
-export default async function authMiddleware(request: NextRequest) {
-	const { data: session } = await betterFetch<Session>(
-		"/api/auth/get-session",
-		{
-			baseURL: request.nextUrl.origin,
-			headers: {
-				cookie: request.headers.get("cookie") || "",
-			},
-		},
-	);
- 
-	if (!session) {
-		return NextResponse.redirect(new URL("/signup", request.url));
-	}
-	return NextResponse.next();
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./lib/auth";
+import { headers } from "next/headers";
+
+export async function middleware(request: NextRequest) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (!session) {
+    return NextResponse.redirect(new URL("/signup", request.url));
+  }
+  return NextResponse.next();
 }
- 
+
 export const config = {
-	matcher: ["/"],
+  matcher: ["/"],
 };
